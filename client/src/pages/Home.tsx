@@ -256,7 +256,7 @@ export default function Home() {
               </a>
               
               <a
-                href="https://vedkhairnar.netlify.app"
+                href="https://dev-ved-khairnar.web.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors text-slate-700 hover:text-slate-900 text-xs md:text-sm"
@@ -266,7 +266,7 @@ export default function Home() {
               </a>
               
               <a
-                href="https://www.linkedin.com/in/ved-khairnar"
+                href="https://www.linkedin.com/in/ved-khairnar-193889355"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors text-slate-700 hover:text-slate-900 text-xs md:text-sm"
@@ -276,7 +276,7 @@ export default function Home() {
               </a>
               
               <a
-                href="mailto:khairnarved7@gmail.com"
+                href="mailto:vedkhairnar4@gmail.com"
                 className="flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors text-slate-700 hover:text-slate-900 text-xs md:text-sm"
               >
                 <Mail className="w-4 h-4" />
