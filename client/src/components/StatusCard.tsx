@@ -6,10 +6,11 @@ interface StatusCardProps {
   status: "idle" | "loading" | "success" | "error";
   message?: string;
   downloadUrl?: string;
+  filename?: string;
   onReset: () => void;
 }
 
-export function StatusCard({ status, message, downloadUrl, onReset }: StatusCardProps) {
+export function StatusCard({ status, message, downloadUrl, filename, onReset }: StatusCardProps) {
   if (status === "idle") return null;
 
   return (
@@ -63,7 +64,7 @@ export function StatusCard({ status, message, downloadUrl, onReset }: StatusCard
                 <a
                   href={downloadUrl}
                   target="_blank"
-                  download
+                  download={filename || "unlocked.pdf"}
                   className="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors shadow-lg shadow-green-600/20"
                 >
                   <Download className="w-4 h-4 mr-2" />
