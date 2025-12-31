@@ -5,7 +5,7 @@ import { StatusCard } from "@/components/StatusCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, Lock, ShieldCheck, Zap, Github, Globe, Linkedin, Mail, User } from "lucide-react";
+import { Eye, EyeOff, Lock, ShieldCheck, Zap, Github, Globe, Linkedin, Mail, User, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 
@@ -152,12 +152,12 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Action Button */}
-            <div className="pt-2">
+            {/* Action Buttons */}
+            <div className="pt-2 flex gap-3">
               <Button
                 type="submit"
                 disabled={!file || !password || unlockMutation.isPending}
-                className="w-full py-7 text-lg rounded-xl font-semibold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:shadow-none disabled:translate-y-0"
+                className="flex-1 py-7 text-lg rounded-xl font-semibold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:shadow-none disabled:translate-y-0"
               >
                 {unlockMutation.isPending ? (
                   <span className="flex items-center gap-2">
@@ -169,6 +169,15 @@ export default function Home() {
                     Unlock PDF
                   </span>
                 )}
+              </Button>
+              <Button
+                type="button"
+                onClick={handleReset}
+                disabled={unlockMutation.isPending}
+                variant="outline"
+                className="px-6 py-7 text-lg rounded-xl font-semibold border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 disabled:opacity-50"
+              >
+                <X className="w-5 h-5" />
               </Button>
             </div>
           </form>

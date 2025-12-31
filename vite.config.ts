@@ -15,9 +15,21 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        // Ensure worker file is copied to public assets
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name === "pdf.worker.min.mjs") {
+            return "pdf.worker.min.mjs";
+          }
+          return "assets/[name]-[hash][extname]";
+        },
+      },
+    },
   },
   server: {
     port: 3000,
     open: true,
   },
+  publicDir: "public",
 });

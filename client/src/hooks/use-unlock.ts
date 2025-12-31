@@ -2,9 +2,10 @@ import { useMutation } from "@tanstack/react-query";
 import * as pdfjsLib from "pdfjs-dist";
 import { PDFDocument } from "pdf-lib";
 
-// Configure pdfjs worker - use a CDN for the worker
+// Configure pdfjs worker - use local worker from public folder
 if (typeof window !== "undefined") {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+  // Use the worker file from the public folder (copied during build)
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 }
 
 type UnlockResponse = {
