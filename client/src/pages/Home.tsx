@@ -71,8 +71,8 @@ export default function Home() {
     <div className="min-h-screen bg-slate-50 relative overflow-hidden">
       {/* Abstract Background Decoration */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-blue-400/5 rounded-full blur-3xl" />
+        <div className="absolute top-[-10%] right-[-5%] w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[350px] h-[350px] md:w-[600px] md:h-[600px] bg-blue-400/5 rounded-full blur-3xl" />
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 py-12 md:py-20 flex flex-col items-center">
@@ -84,13 +84,13 @@ export default function Home() {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center justify-center p-3 mb-6 bg-white rounded-2xl shadow-sm border border-border">
-            <ShieldCheck className="w-8 h-8 text-primary" />
+          <div className="inline-flex items-center justify-center p-2 md:p-3 mb-4 md:mb-6 bg-white rounded-xl md:rounded-2xl shadow-sm border border-border">
+            <ShieldCheck className="w-6 h-6 md:w-8 md:h-8 text-primary" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-3 md:mb-4 px-2">
             PDF Password Remover
           </h1>
-          <p className="text-lg text-slate-500 max-w-lg mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg text-slate-500 max-w-lg mx-auto leading-relaxed px-4">
             Securely remove passwords from your PDF documents. <br className="hidden md:block"/>
             Fast, private, and completely offline - all processing happens in your browser.
           </p>
@@ -101,7 +101,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="w-full max-w-2xl bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 p-6 md:p-8"
+          className="w-full max-w-2xl bg-white rounded-2xl md:rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 p-4 sm:p-6 md:p-8"
         >
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Step 1: File Upload */}
@@ -135,7 +135,7 @@ export default function Home() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={!file || unlockMutation.isPending}
-                  className="pl-10 pr-10 py-6 text-lg bg-slate-50 border-slate-200 focus:bg-white focus:border-primary transition-all rounded-xl"
+                  className="pl-10 pr-10 py-4 md:py-6 text-base md:text-lg bg-slate-50 border-slate-200 focus:bg-white focus:border-primary transition-all rounded-xl"
                 />
                 <button
                   type="button"
@@ -157,7 +157,7 @@ export default function Home() {
               <Button
                 type="submit"
                 disabled={!file || !password || unlockMutation.isPending}
-                className="flex-1 py-7 text-lg rounded-xl font-semibold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:shadow-none disabled:translate-y-0"
+                className="flex-1 py-5 md:py-7 text-base md:text-lg rounded-xl font-semibold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:shadow-none disabled:translate-y-0"
               >
                 {unlockMutation.isPending ? (
                   <span className="flex items-center gap-2">
@@ -175,7 +175,7 @@ export default function Home() {
                 onClick={handleReset}
                 disabled={unlockMutation.isPending}
                 variant="outline"
-                className="px-6 py-7 text-lg rounded-xl font-semibold border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 disabled:opacity-50"
+                className="px-4 md:px-6 py-5 md:py-7 text-base md:text-lg rounded-xl font-semibold border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 disabled:opacity-50"
               >
                 <X className="w-5 h-5" />
               </Button>
@@ -201,7 +201,7 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-center w-full max-w-3xl"
+          className="mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 text-center w-full max-w-3xl px-4"
         >
           <div className="p-4">
             <h3 className="font-semibold text-slate-900 mb-2">Secure</h3>
@@ -224,28 +224,32 @@ export default function Home() {
           transition={{ delay: 0.6 }}
           className="mt-16 w-full max-w-2xl"
         >
-          <div className="bg-white rounded-3xl shadow-lg shadow-slate-200/50 border border-slate-100 p-8">
-            <div className="flex items-center justify-center mb-6">
-              <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full">
-                <User className="w-6 h-6 text-primary" />
+          <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg shadow-slate-200/50 border border-slate-100 p-6 md:p-8">
+            <div className="flex items-center justify-center mb-4 md:mb-6">
+              <div className="relative">
+                <img 
+                  src="/img/Dev pic.png" 
+                  alt="Ved Khairnar" 
+                  className="w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] rounded-full object-cover border-4 border-primary/20 shadow-lg"
+                />
               </div>
             </div>
             
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">Ved Khairnar</h2>
-              <p className="text-slate-600 mb-1">TY B.Tech (Computer Science & Engineering)</p>
-              <p className="text-sm text-slate-500 italic mt-3">
+            <div className="text-center mb-4 md:mb-6">
+              <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-2">Ved Khairnar</h2>
+              <p className="text-sm md:text-base text-slate-600 mb-1">TY B.Tech (Computer Science & Engineering)</p>
+              <p className="text-xs md:text-sm text-slate-500 italic mt-3 px-2">
                 "Building simple, smart, and useful technology for everyone."
               </p>
             </div>
 
             {/* Social Links */}
-            <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
+            <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4 mt-6 md:mt-8">
               <a
                 href="https://github.com/VedKhairnar24"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors text-slate-700 hover:text-slate-900"
+                className="flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors text-slate-700 hover:text-slate-900 text-xs md:text-sm"
               >
                 <Github className="w-4 h-4" />
                 <span className="text-sm font-medium">GitHub</span>
@@ -255,7 +259,7 @@ export default function Home() {
                 href="https://vedkhairnar.netlify.app"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors text-slate-700 hover:text-slate-900"
+                className="flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors text-slate-700 hover:text-slate-900 text-xs md:text-sm"
               >
                 <Globe className="w-4 h-4" />
                 <span className="text-sm font-medium">Portfolio</span>
@@ -265,7 +269,7 @@ export default function Home() {
                 href="https://www.linkedin.com/in/ved-khairnar"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors text-slate-700 hover:text-slate-900"
+                className="flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors text-slate-700 hover:text-slate-900 text-xs md:text-sm"
               >
                 <Linkedin className="w-4 h-4" />
                 <span className="text-sm font-medium">LinkedIn</span>
@@ -273,7 +277,7 @@ export default function Home() {
               
               <a
                 href="mailto:khairnarved7@gmail.com"
-                className="flex items-center gap-2 px-4 py-2 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors text-slate-700 hover:text-slate-900"
+                className="flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors text-slate-700 hover:text-slate-900 text-xs md:text-sm"
               >
                 <Mail className="w-4 h-4" />
                 <span className="text-sm font-medium">Email</span>
