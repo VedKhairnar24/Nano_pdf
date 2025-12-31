@@ -1,20 +1,53 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Dropzone } from "@/components/Dropzone";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { StatusCard } from "@/components/StatusCard";
 import { ScanText, Download, X, FileText } from "lucide-react";
+import { useOcrPdf } from "@/hooks/use-ocr";
+import { useToast } from "@/hooks/use-toast";
 
 export default function OCR() {
   const [file, setFile] = useState<File | null>(null);
+  
+  const { toast } = useToast();
+  const ocrMutation = useOcrPdf();
+
+  // Clean up blob URLs when component unmounts or mutation resets
+  useEffect(() => {
+    return () => {
+      if (ocrMutation.data?.downloadUrl) {
+        URL.revokeObjectURL(ocrMutation.data.downloadUrl);
+      }
+    };
+  }, [ocrMutation.data?.downloadUrl]);
 
   const handleOCR = () => {
-    // TODO: Implement PDF OCR functionality
-    console.log("Performing OCR on file:", file);
+    if (!file) {
+      toast({
+        title: "No file selected",
+        description: "Please upload a PDF file for OCR processing.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Clean up previous blob URL if exists
+    if (ocrMutation.data?.downloadUrl) {
+      URL.revokeObjectURL(ocrMutation.data.downloadUrl);
+    }
+
+    ocrMutation.mutate({ file });
   };
 
   const handleReset = () => {
+    // Clean up blob URL before resetting
+    if (ocrMutation.data?.downloadUrl) {
+      URL.revokeObjectURL(ocrMutation.data.downloadUrl);
+    }
     setFile(null);
+    ocrMutation.reset();
   };
 
   return (
@@ -56,41 +89,43 @@ export default function OCR() {
             <div className="flex gap-3 pt-4">
               <Button 
                 onClick={handleOCR}
-                disabled={!file}
+                disabled={!file || ocrMutation.isPending}
                 className="flex-1 py-5 text-base rounded-xl font-semibold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:shadow-none disabled:translate-y-0"
               >
-                <ScanText className="w-5 h-5 mr-2 fill-current" />
-                OCR PDF
+                {ocrMutation.isPending ? (
+                  <span className="flex items-center gap-2">
+                    Processing...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <ScanText className="w-5 h-5 mr-2 fill-current" />
+                    OCR PDF
+                  </span>
+                )}
               </Button>
               <Button
                 onClick={handleReset}
+                disabled={ocrMutation.isPending}
                 variant="outline"
-                className="px-4 py-5 text-base rounded-xl font-semibold border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300"
+                className="px-4 py-5 text-base rounded-xl font-semibold border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 disabled:opacity-50"
               >
                 <X className="w-5 h-5" />
               </Button>
             </div>
           </div>
 
-          {/* Result Area */}
-          {file && (
-            <div className="mt-8 pt-8 border-t border-slate-200">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Result</h3>
-              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <FileText className="w-8 h-8 text-primary" />
-                  <div>
-                    <p className="font-medium text-slate-900">{file.name}</p>
-                    <p className="text-sm text-slate-600">Ready to download</p>
-                  </div>
-                </div>
-                <Button>
-                  <Download className="w-4 h-4 mr-2" />
-                  Download
-                </Button>
-              </div>
-            </div>
-          )}
+          {/* Status Display */}
+          <StatusCard 
+            status={
+              ocrMutation.isPending ? "loading" : 
+              ocrMutation.isSuccess ? "success" : 
+              ocrMutation.isError ? "error" : "idle"
+            }
+            message={ocrMutation.error?.message}
+            downloadUrl={ocrMutation.data?.downloadUrl}
+            filename={ocrMutation.data?.filename}
+            onReset={handleReset}
+          />
         </Card>
 
         <div className="mt-8 text-center text-sm text-slate-500">

@@ -1,22 +1,55 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Dropzone } from "@/components/Dropzone";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { StatusCard } from "@/components/StatusCard";
 import { FileDiff, Download, X, FileText } from "lucide-react";
+import { useComparePdf } from "@/hooks/use-compare";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Compare() {
   const [file1, setFile1] = useState<File | null>(null);
   const [file2, setFile2] = useState<File | null>(null);
+  
+  const { toast } = useToast();
+  const compareMutation = useComparePdf();
+
+  // Clean up blob URLs when component unmounts or mutation resets
+  useEffect(() => {
+    return () => {
+      if (compareMutation.data?.downloadUrl) {
+        URL.revokeObjectURL(compareMutation.data.downloadUrl);
+      }
+    };
+  }, [compareMutation.data?.downloadUrl]);
 
   const handleCompare = () => {
-    // TODO: Implement PDF comparison functionality
-    console.log("Comparing files:", file1, file2);
+    if (!file1 || !file2) {
+      toast({
+        title: "Missing files",
+        description: "Please upload both PDF files to compare.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Clean up previous blob URL if exists
+    if (compareMutation.data?.downloadUrl) {
+      URL.revokeObjectURL(compareMutation.data.downloadUrl);
+    }
+
+    compareMutation.mutate({ file1, file2 });
   };
 
   const handleReset = () => {
+    // Clean up blob URL before resetting
+    if (compareMutation.data?.downloadUrl) {
+      URL.revokeObjectURL(compareMutation.data.downloadUrl);
+    }
     setFile1(null);
     setFile2(null);
+    compareMutation.reset();
   };
 
   const canCompare = file1 && file2;
@@ -74,47 +107,43 @@ export default function Compare() {
             <div className="flex gap-3 pt-4">
               <Button 
                 onClick={handleCompare}
-                disabled={!canCompare}
+                disabled={!canCompare || compareMutation.isPending}
                 className="flex-1 py-5 text-base rounded-xl font-semibold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:shadow-none disabled:translate-y-0"
               >
-                <FileDiff className="w-5 h-5 mr-2 fill-current" />
-                Compare PDFs
+                {compareMutation.isPending ? (
+                  <span className="flex items-center gap-2">
+                    Comparing...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <FileDiff className="w-5 h-5 mr-2 fill-current" />
+                    Compare PDFs
+                  </span>
+                )}
               </Button>
               <Button
                 onClick={handleReset}
+                disabled={compareMutation.isPending}
                 variant="outline"
-                className="px-4 py-5 text-base rounded-xl font-semibold border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300"
+                className="px-4 py-5 text-base rounded-xl font-semibold border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 disabled:opacity-50"
               >
                 <X className="w-5 h-5" />
               </Button>
             </div>
           </div>
 
-          {/* Result Area */}
-          {canCompare && (
-            <div className="mt-8 pt-8 border-t border-slate-200">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Result</h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <FileText className="w-8 h-8 text-primary" />
-                    <div>
-                      <p className="font-medium text-slate-900">differences.pdf</p>
-                      <p className="text-sm text-slate-600">Differences highlighted</p>
-                    </div>
-                  </div>
-                  <Button>
-                    <Download className="w-4 h-4 mr-2" />
-                    Download
-                  </Button>
-                </div>
-                <div className="p-4 bg-slate-50 rounded-lg">
-                  <h4 className="font-medium text-slate-900 mb-2">Comparison Summary</h4>
-                  <p className="text-sm text-slate-600">Found 5 differences between the documents.</p>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Status Display */}
+          <StatusCard 
+            status={
+              compareMutation.isPending ? "loading" : 
+              compareMutation.isSuccess ? "success" : 
+              compareMutation.isError ? "error" : "idle"
+            }
+            message={compareMutation.error?.message}
+            downloadUrl={compareMutation.data?.downloadUrl}
+            filename={compareMutation.data?.filename}
+            onReset={handleReset}
+          />
         </Card>
 
         <div className="mt-8 text-center text-sm text-slate-500">

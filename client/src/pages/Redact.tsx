@@ -1,20 +1,53 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Dropzone } from "@/components/Dropzone";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { StatusCard } from "@/components/StatusCard";
 import { EyeOff, Download, X, FileText } from "lucide-react";
+import { useRedactPdf } from "@/hooks/use-redact";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Redact() {
   const [file, setFile] = useState<File | null>(null);
+  
+  const { toast } = useToast();
+  const redactMutation = useRedactPdf();
+
+  // Clean up blob URLs when component unmounts or mutation resets
+  useEffect(() => {
+    return () => {
+      if (redactMutation.data?.downloadUrl) {
+        URL.revokeObjectURL(redactMutation.data.downloadUrl);
+      }
+    };
+  }, [redactMutation.data?.downloadUrl]);
 
   const handleRedact = () => {
-    // TODO: Implement PDF redaction functionality
-    console.log("Redacting file:", file);
+    if (!file) {
+      toast({
+        title: "No file selected",
+        description: "Please upload a PDF file to redact.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Clean up previous blob URL if exists
+    if (redactMutation.data?.downloadUrl) {
+      URL.revokeObjectURL(redactMutation.data.downloadUrl);
+    }
+
+    redactMutation.mutate({ file });
   };
 
   const handleReset = () => {
+    // Clean up blob URL before resetting
+    if (redactMutation.data?.downloadUrl) {
+      URL.revokeObjectURL(redactMutation.data.downloadUrl);
+    }
     setFile(null);
+    redactMutation.reset();
   };
 
   return (
@@ -56,41 +89,43 @@ export default function Redact() {
             <div className="flex gap-3 pt-4">
               <Button 
                 onClick={handleRedact}
-                disabled={!file}
+                disabled={!file || redactMutation.isPending}
                 className="flex-1 py-5 text-base rounded-xl font-semibold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:shadow-none disabled:translate-y-0"
               >
-                <EyeOff className="w-5 h-5 mr-2 fill-current" />
-                Redact PDF
+                {redactMutation.isPending ? (
+                  <span className="flex items-center gap-2">
+                    Redacting...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <EyeOff className="w-5 h-5 mr-2 fill-current" />
+                    Redact PDF
+                  </span>
+                )}
               </Button>
               <Button
                 onClick={handleReset}
+                disabled={redactMutation.isPending}
                 variant="outline"
-                className="px-4 py-5 text-base rounded-xl font-semibold border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300"
+                className="px-4 py-5 text-base rounded-xl font-semibold border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 disabled:opacity-50"
               >
                 <X className="w-5 h-5" />
               </Button>
             </div>
           </div>
 
-          {/* Result Area */}
-          {file && (
-            <div className="mt-8 pt-8 border-t border-slate-200">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Result</h3>
-              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <FileText className="w-8 h-8 text-primary" />
-                  <div>
-                    <p className="font-medium text-slate-900">{file.name}</p>
-                    <p className="text-sm text-slate-600">Ready to download</p>
-                  </div>
-                </div>
-                <Button>
-                  <Download className="w-4 h-4 mr-2" />
-                  Download
-                </Button>
-              </div>
-            </div>
-          )}
+          {/* Status Display */}
+          <StatusCard 
+            status={
+              redactMutation.isPending ? "loading" : 
+              redactMutation.isSuccess ? "success" : 
+              redactMutation.isError ? "error" : "idle"
+            }
+            message={redactMutation.error?.message}
+            downloadUrl={redactMutation.data?.downloadUrl}
+            filename={redactMutation.data?.filename}
+            onReset={handleReset}
+          />
         </Card>
 
         <div className="mt-8 text-center text-sm text-slate-500">

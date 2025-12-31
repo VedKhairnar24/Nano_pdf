@@ -1,12 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Dropzone } from "@/components/Dropzone";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { StatusCard } from "@/components/StatusCard";
 import { FileEdit, Download, X, FileText } from "lucide-react";
+import { useOrganizePdf } from "@/hooks/use-organize";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Organize() {
   const [files, setFiles] = useState<File[]>([]);
+  
+  const { toast } = useToast();
+  const organizeMutation = useOrganizePdf();
+
+  // Clean up blob URLs when component unmounts or mutation resets
+  useEffect(() => {
+    return () => {
+      if (organizeMutation.data?.downloadUrl) {
+        URL.revokeObjectURL(organizeMutation.data.downloadUrl);
+      }
+    };
+  }, [organizeMutation.data?.downloadUrl]);
 
   const handleFileSelect = (file: File | null) => {
     if (file) {
@@ -21,12 +36,30 @@ export default function Organize() {
   };
 
   const handleOrganize = () => {
-    // TODO: Implement PDF organization functionality
-    console.log("Organizing files:", files);
+    if (files.length === 0) {
+      toast({
+        title: "No files selected",
+        description: "Please upload at least one PDF file to organize.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Clean up previous blob URL if exists
+    if (organizeMutation.data?.downloadUrl) {
+      URL.revokeObjectURL(organizeMutation.data.downloadUrl);
+    }
+
+    organizeMutation.mutate({ files });
   };
 
   const handleReset = () => {
+    // Clean up blob URL before resetting
+    if (organizeMutation.data?.downloadUrl) {
+      URL.revokeObjectURL(organizeMutation.data.downloadUrl);
+    }
     setFiles([]);
+    organizeMutation.reset();
   };
 
   return (
@@ -98,41 +131,43 @@ export default function Organize() {
             <div className="flex gap-3 pt-4">
               <Button 
                 onClick={handleOrganize}
-                disabled={files.length === 0}
+                disabled={files.length === 0 || organizeMutation.isPending}
                 className="flex-1 py-5 text-base rounded-xl font-semibold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:shadow-none disabled:translate-y-0"
               >
-                <FileEdit className="w-5 h-5 mr-2 fill-current" />
-                Organize PDFs
+                {organizeMutation.isPending ? (
+                  <span className="flex items-center gap-2">
+                    Organizing...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <FileEdit className="w-5 h-5 mr-2 fill-current" />
+                    Organize PDFs
+                  </span>
+                )}
               </Button>
               <Button
                 onClick={handleReset}
+                disabled={organizeMutation.isPending}
                 variant="outline"
-                className="px-4 py-5 text-base rounded-xl font-semibold border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300"
+                className="px-4 py-5 text-base rounded-xl font-semibold border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 disabled:opacity-50"
               >
                 <X className="w-5 h-5" />
               </Button>
             </div>
           </div>
 
-          {/* Result Area */}
-          {files.length > 0 && (
-            <div className="mt-8 pt-8 border-t border-slate-200">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Result</h3>
-              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <FileText className="w-8 h-8 text-primary" />
-                  <div>
-                    <p className="font-medium text-slate-900">organized.pdf</p>
-                    <p className="text-sm text-slate-600">Ready to download</p>
-                  </div>
-                </div>
-                <Button>
-                  <Download className="w-4 h-4 mr-2" />
-                  Download
-                </Button>
-              </div>
-            </div>
-          )}
+          {/* Status Display */}
+          <StatusCard 
+            status={
+              organizeMutation.isPending ? "loading" : 
+              organizeMutation.isSuccess ? "success" : 
+              organizeMutation.isError ? "error" : "idle"
+            }
+            message={organizeMutation.error?.message}
+            downloadUrl={organizeMutation.data?.downloadUrl}
+            filename={organizeMutation.data?.filename}
+            onReset={handleReset}
+          />
         </Card>
 
         <div className="mt-8 text-center text-sm text-slate-500">
