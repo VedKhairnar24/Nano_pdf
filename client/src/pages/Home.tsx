@@ -163,7 +163,7 @@ export default function Home() {
                 Unlock PDF
               </Button>
             </Link>
-            <Link href="/all-tools">
+            <Link href="/tools">
               <Button variant="outline" size="lg" className="px-8 py-6 text-lg rounded-xl font-semibold border-2 border-slate-200 hover:bg-slate-50">
                 View All Tools
               </Button>
@@ -225,7 +225,7 @@ export default function Home() {
             </div>
 
             <div className="text-center mt-12">
-              <Link href="/all-tools">
+              <Link href="/tools">
                 <Button variant="outline" size="lg" className="px-6 py-3 rounded-xl font-medium">
                   View All Tools
                   <ArrowRight className="w-4 h-4 ml-2" />

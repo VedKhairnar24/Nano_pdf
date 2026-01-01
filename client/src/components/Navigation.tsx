@@ -5,10 +5,10 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, ShieldCheck } from "lucide-react";
 
 const navItems = [
-  { name: "Tools", href: "/" },
-  { name: "How it Works", href: "#how-it-works" },
-  { name: "Security", href: "#security" },
-  { name: "About", href: "#about" },
+  { name: "Tools", href: "/tools" },
+  { name: "How it Works", href: "/how-it-works" },
+  { name: "Security", href: "/security" },
+  { name: "About", href: "/about" },
 ];
 
 export default function Navigation() {

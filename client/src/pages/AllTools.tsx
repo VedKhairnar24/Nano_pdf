@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import ToolCard from "@/components/ToolCard";
 import { 
   Lock, 
-  FileDown, 
-  ShieldCheck, 
-  FileEdit, 
+  FileArchive, 
+  Shield, 
+  Merge, 
   Crop, 
   EyeOff, 
-  ScanText, 
-  Camera, 
+  FileType, 
+  Scan, 
   FileDiff 
 } from "lucide-react";
 
@@ -23,19 +23,19 @@ export default function AllTools() {
       href: "/unlock"
     },
     {
-      icon: <FileDown className="w-6 h-6 text-primary" />,
+      icon: <FileArchive className="w-6 h-6 text-primary" />,
       title: "Compress PDF",
       description: "Reduce PDF file size without losing quality",
       href: "/compress"
     },
     {
-      icon: <ShieldCheck className="w-6 h-6 text-primary" />,
+      icon: <Shield className="w-6 h-6 text-primary" />,
       title: "Protect PDF",
       description: "Add password protection to your PDFs",
       href: "/protect"
     },
     {
-      icon: <FileEdit className="w-6 h-6 text-primary" />,
+      icon: <Merge className="w-6 h-6 text-primary" />,
       title: "Organize PDF",
       description: "Reorder, delete, or merge PDF pages",
       href: "/organize"
@@ -53,13 +53,13 @@ export default function AllTools() {
       href: "/redact"
     },
     {
-      icon: <ScanText className="w-6 h-6 text-primary" />,
+      icon: <FileType className="w-6 h-6 text-primary" />,
       title: "OCR PDF",
       description: "Convert scanned PDFs into searchable documents",
       href: "/ocr"
     },
     {
-      icon: <Camera className="w-6 h-6 text-primary" />,
+      icon: <Scan className="w-6 h-6 text-primary" />,
       title: "Scan to PDF",
       description: "Create PDFs from images or camera scans",
       href: "/scan"
@@ -73,18 +73,19 @@ export default function AllTools() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-4">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             All PDF Tools
           </h1>
-          <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto">
-            All the PDF tools you need, in one place. No uploads. No servers. Your files stay private.
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Our comprehensive suite of PDF tools helps you manage, edit, and secure your documents with ease. 
+            All processing happens locally on your device - your files never leave your computer.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {tools.map((tool, index) => (
             <ToolCard 
               key={index}
@@ -96,18 +97,16 @@ export default function AllTools() {
           ))}
         </div>
 
-        <div className="mt-16 text-center">
-          <Card className="max-w-2xl mx-auto">
-            <CardContent className="p-8">
-              <h3 className="text-xl font-semibold mb-4">Need a different tool?</h3>
-              <p className="text-slate-600 mb-6">
-                If you need a specific PDF tool that's not listed here, feel free to reach out.
-              </p>
-              <Link href="mailto:vedkhairnar4@gmail.com">
-                <Button>Contact Us</Button>
-              </Link>
-            </CardContent>
-          </Card>
+        <div className="mt-20 bg-white rounded-2xl shadow-lg p-8 border border-gray-100 text-center max-w-3xl mx-auto">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">Need a different tool?</h3>
+          <p className="text-gray-600 mb-6 max-w-md mx-auto">
+            If you need a specific PDF tool that's not listed here, feel free to reach out.
+          </p>
+          <Link href="mailto:vedkhairnar4@gmail.com">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition duration-200">
+              Contact Us
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

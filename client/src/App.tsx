@@ -15,6 +15,10 @@ import OCR from "@/pages/OCR";
 import Scan from "@/pages/Scan";
 import Compare from "@/pages/Compare";
 import AllTools from "@/pages/AllTools";
+import Tools from "@/pages/Tools";
+import HowItWorks from "@/pages/HowItWorks";
+import Security from "@/pages/Security";
+import About from "@/pages/About";
 import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -33,6 +37,10 @@ function Router() {
       <Route path="/scan" component={Scan} />
       <Route path="/compare" component={Compare} />
       <Route path="/all-tools" component={AllTools} />
+      <Route path="/tools" component={Tools} />
+      <Route path="/how-it-works" component={HowItWorks} />
+      <Route path="/security" component={Security} />
+      <Route path="/about" component={About} />
       
       {/* Fallback to 404 */}
       <Route component={NotFound} />
